@@ -1,0 +1,37 @@
+# ── Large / local data (not for GitHub) ─────────────────────────────────────
+*.bin
+*.pt
+*.pth
+*.npy
+*.npz
+checkpoints/
+artifacts/*
+!artifacts/README.md
+data/adsb_iq_data/
+data/captures/*.bin
+
+# ── Python ──────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+.venv/
+.venv_*/
+*.egg-info/
+.pytest_cache/
+
+# ── LaTeX build artifacts ───────────────────────────────────────────────────
+docs/paper.aux
+docs/paper.bbl
+docs/paper.blg
+docs/paper.log
+docs/paper.out
+docs/paper.toc
+docs/paper.synctex.gz
+
+# ── OS / IDE ────────────────────────────────────────────────────────────────
+.DS_Store
+.cursor/
+*.swp
+*~
+
+# ── Legacy eval outputs at repo root (if any remain) ───────────────────────
+evaluation_results*
