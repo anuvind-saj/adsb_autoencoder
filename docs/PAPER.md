@@ -369,7 +369,7 @@ python live_bridge.py \
     --input data/captures/capture.bin \
     --output artifacts/clean_blend005.bin
 
-python compare_decodings.py data/captures/capture.bin artifacts/clean_blend005.bin
+python compare_decodings.py data/captures/capture.bin artifacts/clean_blend005.bin --label "blend 0.05"
 ```
 
 For live streaming to `dump1090`:
@@ -390,7 +390,7 @@ rtl_sdr -f 1090000000 -s 2000000 -g 36 - \
 | `deploy_adsb_capture_blend.bin` | Processed in-distribution benchmark |
 | `deploy_test_capture_blend005.bin` | Processed OOD benchmark |
 | `blend_sweep.py` | Offline α sweep utility |
-| `compare_decodings.py` | CRC frame count evaluation |
+| `compare_decodings.py` | Compare raw vs processed; requires two `.bin` inputs |
 
 Deployment to Raspberry Pi edge nodes via `deploy.sh` (rsync to `rpi-west.local`) is supported; real-time throughput on Pi 4 CPU requires `--torchscript`, reduced overlap, or smaller model variant—not validated in this report.
 
@@ -433,11 +433,30 @@ The project did not succeed in:
 
 ### A.1 Evaluation Command
 
+`compare_decodings.py` requires **two** RTL-SDR `.bin` files: raw (baseline) and processed (from `live_bridge.py`).
+
 ```bash
-python compare_decodings.py RAW.bin PROCESSED.bin
+# Compare raw vs blend output:
+python compare_decodings.py \
+    data/captures/test_capture_36db.bin \
+    artifacts/test_blend005.bin \
+    --label "blend 0.05"
+
+# Generic form:
+python compare_decodings.py RAW.bin PROCESSED.bin [--label NAME]
 ```
 
-Reports CRC-valid frame count, unique ICAO addresses, preamble candidates, and estimated noise floor.
+Reports CRC-valid frame count, unique ICAO addresses, preamble candidates, and delta vs raw.
+
+**Raw only** (no comparison):
+
+```bash
+python -c "
+from compare_decodings import decode_file
+msgs, icao = decode_file('data/captures/test_capture_36db.bin')
+print(len(msgs), 'frames', len(icao), 'aircraft')
+"
+```
 
 ### A.2 Blend Sweep
 
@@ -465,7 +484,7 @@ Outputs: `figures/fig_pipeline.png`, `fig_ppm_grid.png`, `fig_collision.png`, `f
 | `supervised_dataset.py` | Dataset + collision augmentation |
 | `train_supervised.py` | Supervised fine-tuning |
 | `live_bridge.py` | Streaming inference, blend, identity modes |
-| `compare_decodings.py` | Downstream decode evaluation |
+| `compare_decodings.py` | Compare raw vs processed; requires two `.bin` inputs |
 | `blend_sweep.py` | Offline α sweep |
 
 ### A.5 Capture Provenance

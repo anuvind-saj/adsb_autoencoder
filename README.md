@@ -27,7 +27,7 @@ adsb_autoencoder/
 ├── README.md                 # this file
 ├── model.py, generator.py, … # core Python (run from repo root)
 ├── live_bridge.py            # streaming inference + --blend
-├── compare_decodings.py      # CRC frame-count evaluation
+├── compare_decodings.py      # compare raw vs processed frame counts (2 files)
 ├── blend_sweep.py            # offline α sweep
 ├── checkpoints/              # .pt weights (gitignored — see below)
 ├── data/
@@ -54,15 +54,21 @@ conda activate adsb
 pip install -r requirements_rpi.txt   # CPU torch index; works on Mac too
 ```
 
-### Evaluate a capture
+### Raw baseline (frame count only)
 
-Place captures in `data/captures/`, then:
+`compare_decodings.py` compares **two** files (raw vs processed). To decode **raw only**:
 
 ```bash
-python compare_decodings.py data/captures/test_capture_36db.bin
+python -c "
+from compare_decodings import decode_file
+msgs, icao = decode_file('data/captures/test_capture_36db.bin')
+print(f'{len(msgs)} frames, {len(icao)} aircraft')
+"
 ```
 
-### Deployable blend (recommended)
+### Compare raw vs processed (recommended)
+
+Process with `live_bridge.py`, then compare against the raw capture:
 
 ```bash
 python live_bridge.py \
@@ -73,8 +79,11 @@ python live_bridge.py \
 
 python compare_decodings.py \
     data/captures/test_capture_36db.bin \
-    artifacts/test_blend005.bin
+    artifacts/test_blend005.bin \
+    --label "blend 0.05"
 ```
+
+Prints side-by-side frames, aircraft, and delta (raw = baseline).
 
 ### Rebuild paper PDF
 

@@ -748,7 +748,8 @@ python live_bridge.py \
     --output artifacts/clean_blend005.bin
 
 python compare_decodings.py \
-    data/captures/capture.bin artifacts/clean_blend005.bin
+    data/captures/capture.bin artifacts/clean_blend005.bin \
+    --label "blend 0.05"
 \end{lstlisting}
 
 For live streaming to \texttt{dump1090}:
@@ -777,7 +778,7 @@ frame counts over raw; expect \textbf{preserved} frame counts.
     \texttt{deploy\_adsb\_capture\_blend.bin} & In-distribution benchmark \\
     \texttt{deploy\_test\_capture\_blend005.bin} & OOD benchmark \\
     \texttt{blend\_sweep.py} & Offline $\alpha$ sweep utility \\
-    \texttt{compare\_decodings.py} & CRC frame count evaluation \\
+    \texttt{compare\_decodings.py} & Compare raw vs processed (two \texttt{.bin} files) \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -835,12 +836,22 @@ ground truth---not additional epochs of IQ MSE against re-synthesised targets.
 
 \subsection{Evaluation Command}
 
+\texttt{compare\_decodings.py} requires \textbf{two} RTL-SDR \texttt{.bin} files:
+raw (baseline) and processed (from \texttt{live\_bridge.py}).
+
 \begin{lstlisting}[style=cli]
-python compare_decodings.py RAW.bin PROCESSED.bin
+# Compare raw vs blend output:
+python compare_decodings.py \
+    data/captures/test_capture_36db.bin \
+    artifacts/test_blend005.bin \
+    --label "blend 0.05"
+
+# Generic form:
+python compare_decodings.py RAW.bin PROCESSED.bin [--label NAME]
 \end{lstlisting}
 
-Reports CRC-valid frame count, unique ICAO addresses, preamble candidates, and
-estimated noise floor.
+Reports CRC-valid frame count, unique ICAO addresses, preamble candidates,
+and delta vs.\ raw.
 
 \subsection{Blend Sweep}
 
@@ -876,7 +887,7 @@ results bar chart, and blend sweep plots.
     \texttt{supervised\_dataset.py} & Dataset + collision augmentation \\
     \texttt{train\_supervised.py} & Supervised fine-tuning \\
     \texttt{live\_bridge.py} & Streaming inference, blend, identity modes \\
-    \texttt{compare\_decodings.py} & Downstream decode evaluation \\
+    \texttt{compare\_decodings.py} & Compare raw vs processed decode evaluation \\
     \texttt{blend\_sweep.py} & Offline $\alpha$ sweep \\
     \texttt{generate\_paper\_figures.py} & Publication figure generator \\
     \bottomrule
