@@ -54,7 +54,8 @@
 \begin{center}
   \small\itshape
   Experimental phase closed --- July 2026.\\[0.25em]
-  Code-verified results from the \texttt{adsb\_autoencoder} project.
+  Code-verified results from the \texttt{adsb\_autoencoder} project.\\[0.25em]
+  \url{https://github.com/anuvind-saj/adsb_autoencoder}
 \end{center}
 \vspace{1em}
 
@@ -126,9 +127,9 @@ metric.
   \item A \textbf{physics-aligned data generator} (\texttt{generator.py})
         synthesising 240-sample Mode~S frames at 2.0~MSPS with exact PPM grid
         alignment, hardware impairments, and collision superposition.
-  \item A \textbf{phase-aware 1D U-Net} (\texttt{IQAutoencoder}, 4.19M
-        parameters) with a composite IQ/magnitude/circular-phase loss designed
-        for OOK carrier structure.
+  \item A \textbf{phase-aware 1D U-Net} (\texttt{IQAutoencoder}; 4.19\,M
+        parameters) with composite loss over IQ channels, magnitude envelopes,
+        and circular phase, designed for OOK carrier structure.
   \item A \textbf{supervised labelling pipeline} (\texttt{extract\_labels.py})
         extracting 152{,}343 training pairs from real RTL-SDR bursts by
         CRC-gated re-synthesis.
@@ -834,6 +835,12 @@ ground truth---not additional epochs of IQ MSE against re-synthesised targets.
 \section{Reproducibility}
 %=============================================================================
 
+\subsection{Software Repository}
+
+Source code, evaluation scripts, paper figures, and this report are available
+at \cite{adsb_repo}:
+\url{https://github.com/anuvind-saj/adsb_autoencoder}.
+
 \subsection{Evaluation Command}
 
 \texttt{compare\_decodings.py} requires \textbf{two} RTL-SDR \texttt{.bin} files:
@@ -915,7 +922,7 @@ results bar chart, and blend sweep plots.
 
 Additional engineering detail---training commands, file inventory, collector
 fixes, and milestone logs---is documented in
-\texttt{WHITEPAPER\_BLUEPRINT.md} in the repository. That file is a
+\texttt{WHITEPAPER\_BLUEPRINT.md} in the repository~\cite{adsb_repo}. That file is a
 supplementary technical appendix; this report is self-contained for methods,
 results, and conclusions.
 

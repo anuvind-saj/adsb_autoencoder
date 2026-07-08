@@ -5,6 +5,8 @@
 **Technical Report — July 2026**
 
 > **Status:** Experimental phase closed (July 2026). Code-verified results from the `adsb_autoencoder` project.
+>
+> **Repository:** https://github.com/anuvind-saj/adsb_autoencoder
 
 ---
 
@@ -27,7 +29,7 @@ This work investigates whether a deep neural network can exploit that phase geom
 ### 1.1 Contributions
 
 1. A **physics-aligned data generator** (`generator.py`) synthesising 240-sample Mode S frames at 2.0 MSPS with exact PPM grid alignment, hardware impairments, and collision superposition.
-2. A **phase-aware 1D U-Net** (`IQAutoencoder`, 4.19M parameters) with a composite IQ/magnitude/circular-phase loss designed for OOK carrier structure.
+2. A **phase-aware 1D U-Net** (`IQAutoencoder`, 4.19M parameters) with composite loss over IQ channels, magnitude envelopes, and circular phase, designed for OOK carrier structure.
 3. A **supervised labelling pipeline** (`extract_labels.py`) extracting 152,343 training pairs from real RTL-SDR bursts by CRC-gated re-synthesis.
 4. **Hybrid collision augmentation** (`supervised_dataset.py`) superimposing synthetic interferers onto real captures, with documented failure modes when misconfigured.
 5. A **streaming inference bridge** (`live_bridge.py`) with overlap-add synthesis, global DC warmup, and validated `--identity` / `--blend` modes.
@@ -431,6 +433,12 @@ The project did not succeed in:
 
 ## Appendix A: Reproducibility
 
+### A.0 Software Repository
+
+Source code, evaluation scripts, paper figures, and this report:
+
+**https://github.com/anuvind-saj/adsb_autoencoder**
+
 ### A.1 Evaluation Command
 
 `compare_decodings.py` requires **two** RTL-SDR `.bin` files: raw (baseline) and processed (from `live_bridge.py`).
@@ -497,7 +505,7 @@ Outputs: `figures/fig_pipeline.png`, `fig_ppm_grid.png`, `fig_collision.png`, `f
 
 ### A.6 Extended Implementation Notes
 
-Additional engineering detail—training commands, file inventory, collector fixes, and milestone logs—is documented in `WHITEPAPER_BLUEPRINT.md` in the repository. That file is a supplementary technical appendix; this report is self-contained for methods, results, and conclusions.
+Additional engineering detail—training commands, file inventory, collector fixes, and milestone logs—is documented in `WHITEPAPER_BLUEPRINT.md` in the [repository](https://github.com/anuvind-saj/adsb_autoencoder). That file is a supplementary technical appendix; this report is self-contained for methods, results, and conclusions.
 
 ---
 
@@ -508,6 +516,7 @@ Additional engineering detail—training commands, file inventory, collector fix
 3. O. Ronneberger, P. Fischer, T. Brox, "U-Net: Convolutional Networks for Biomedical Image Segmentation," MICCAI 2015.
 4. M. S. Braasch, "GNSS and the Ionosphere," *Navigation*, 1996 — phase cancellation in composite signals (analogous geometry).
 5. `dump1090` / FlightAware fork — reference magnitude-only ADS-B decoder used for evaluation.
+6. A. Saj, *adsb_autoencoder* — source code, evaluation scripts, and technical report. https://github.com/anuvind-saj/adsb_autoencoder (2026).
 
 ---
 
